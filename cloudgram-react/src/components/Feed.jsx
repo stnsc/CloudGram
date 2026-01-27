@@ -8,7 +8,7 @@ const Feed = () => {
     // Simulating fetching data from DynamoDB via API Gateway
     const fetchPosts = async () => {
       // In a real scenario, this hits your "GetFeed" Lambda function
-      const res = await axios.get('YOUR_API_GATEWAY_URL/feed');
+      const res = await axios.get('https://qabsjgpxse.execute-api.eu-central-1.amazonaws.com/feed');
       setPosts(res.data);
     };
     fetchPosts();

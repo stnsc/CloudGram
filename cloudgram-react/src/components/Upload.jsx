@@ -13,23 +13,25 @@ const Upload = () => {
     if (!file) return;
     setUploading(true);
     
-    // 1. Request a "Presigned URL" from your API Gateway (Serverless Pattern)
-    // This aligns with "Pattern 3" to offload traffic from the main server
     try {
-        const response = await axios.get('YOUR_API_GATEWAY_URL/get-upload-url'); 
+        const response = await axios.get('https://qabsjgpxse.execute-api.eu-central-1.amazonaws.com/get-upload-url');
         const { uploadUrl } = response.data;
 
-        // 2. Upload directly to S3 (reduces latency)
+        // The PUT request must match the signature exactly
         await axios.put(uploadUrl, file, {
-            headers: { 'Content-Type': file.type }
+            headers: { 
+                'Content-Type': 'image/jpeg' // Match what we put in Lambda
+            }
         });
+
         alert('Upload Successful!');
     } catch (error) {
-        console.error('Error uploading:', error);
+        // Log the actual response from S3 if possible
+        console.error('Upload Error:', error.response ? error.response.data : error.message);
     } finally {
         setUploading(false);
     }
-  };
+};
 
   return (
     <div className="upload-container">
