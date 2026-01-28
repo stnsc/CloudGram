@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
-const Upload = ({ user }) => {
+const Upload = () => {
+  const {user} = useAuth();
   const [file, setFile] = useState(null);
   const [caption, setCaption] = useState('');
   const [uploading, setUploading] = useState(false);

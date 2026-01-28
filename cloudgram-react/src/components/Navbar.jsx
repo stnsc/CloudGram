@@ -1,15 +1,24 @@
-import React from 'react';
+import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import '../stylesheets/Navbar.css'; // We will add simple styles below
 
 const Navbar = () => {
+  const { user, logout } = useAuth();
+
   return (
     <nav className="navbar">
-      <div className="logo">CloudGram</div>
-      <div className="links">
-        {/* 'Link' prevents full page reloads, maintaining the "AJAX" feel  */}
-        <Link to="/" className="nav-link">Global Feed</Link>
-        <Link to="/upload" className="nav-link">Upload Photo</Link>
+      <h1>CloudGram</h1>
+      <div className="nav-links">
+        {user ? (
+          <>
+            <Link to="/">Feed</Link>
+            <Link to="/upload">Upload</Link>
+            <span style={{ margin: '0 15px', color: '#888' }}>|</span>
+            <span style={{ fontWeight: 'bold' }}>@{user.username}</span>
+            <button onClick={logout} style={{ marginLeft: '10px', padding: '5px 10px' }}>Logout</button>
+          </>
+        ) : (
+          <Link to="/auth">Login</Link>
+        )}
       </div>
     </nav>
   );

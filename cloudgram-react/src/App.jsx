@@ -1,34 +1,62 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+// Context & Protection
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+
+// Components
 import Navbar from './components/Navbar';
 import Feed from './components/Feed';
 import Upload from './components/Upload';
+import Auth from './components/Auth';
+
+// 1. Import Amplify
+import { Amplify } from 'aws-amplify';
+
+// 2. Configure with your IDs
+Amplify.configure({
+  Auth: {
+    Cognito: {
+      userPoolId: 'eu-central-1_ibviG0RCo', // Paste your User Pool ID
+      userPoolClientId: '2q732dg9a5nhk34kcgi3arqe2' // Paste your Client ID
+    }
+  }
+});
 
 function App() {
-  // SIMULATED AUTHENTICATION
-  // In the future, this will come from AWS Cognito
-  const [user, setUser] = useState({
-    userId: 'user_123',
-    username: 'VladGeorge'
-  });
-
   return (
-    <Router>
-      <div className="app-container">
-        {/* Pass user info to Navbar so we can show "Welcome, Vlad" */}
-        <Navbar user={user} />
-        
-        <div className="content">
-          <Routes>
-            {/* Pass user info to Feed for Likes/Delete logic */}
-            <Route path="/" element={<Feed user={user} />} />
-            
-            {/* Pass user info to Upload for post ownership */}
-            <Route path="/upload" element={<Upload user={user} />} />
-          </Routes>
+    <AuthProvider>
+      <Router>
+        <div className="app-container">
+          <Navbar />
+          <div className="content">
+            <Routes>
+              {/* Public Route */}
+              <Route path="/auth" element={<Auth />} />
+              
+              {/* Protected Routes - These check if user exists in AuthContext */}
+              <Route 
+                path="/" 
+                element={
+                  <ProtectedRoute>
+                    <Feed />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/upload" 
+                element={
+                  <ProtectedRoute>
+                    <Upload />
+                  </ProtectedRoute>
+                } 
+              />
+            </Routes>
+          </div>
         </div>
-      </div>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 

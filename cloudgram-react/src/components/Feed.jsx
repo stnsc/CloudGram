@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
-const Feed = ({ user }) => {
+const Feed = () => {
+  const {user} = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // REPLACE THIS with your actual API Gateway Invoke URL
   const API_BASE_URL = 'https://qabsjgpxse.execute-api.eu-central-1.amazonaws.com'; 
 
   useEffect(() => {
