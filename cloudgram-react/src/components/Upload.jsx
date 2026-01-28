@@ -24,25 +24,21 @@ const Upload = () => {
       let imageUrl = null;
 
       if (file) {
-        // Step A: Pass the real file type (e.g. image/png, image/webp)
         const response = await axios.get(`${API_BASE_URL}/get-upload-url`, {
           params: { contentType: file.type } 
         });
         
         const { uploadUrl, fileKey } = response.data;
 
-        // Step B: Send the file with its native content-type
         await axios.put(uploadUrl, file, {
           headers: { 
-            'Content-Type': file.type // THIS MUST MATCH STEP A
+            'Content-Type': file.type 
           }
         });
         
         imageUrl = `https://cloudgram-media-stnsc.s3.eu-central-1.amazonaws.com/${fileKey}`;
       }
 
-      // Step 2: Create post metadata
-      // The rest of the payload remains the same
       const postPayload = {
         userId: user.userId,
         username: user.username,
@@ -50,7 +46,11 @@ const Upload = () => {
         imageUrl: imageUrl
       };
 
-      await axios.post(`${API_BASE_URL}/create-post`, postPayload);
+      await axios.post(`${API_BASE_URL}/create-post`, postPayload, {
+        headers: {
+          Authorization: user.token // This sends the JWT to the Authorizer
+        }
+      });
       
       alert('Post Published!');
       navigate('/');

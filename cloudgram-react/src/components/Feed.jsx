@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import '../stylesheets/Feed.css';
 
 const Feed = () => {
   const {user} = useAuth();
@@ -32,46 +33,29 @@ const Feed = () => {
   };
 
   const handleDelete = async (postId) => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    if (!window.confirm("Delete this?")) return;
 
     try {
-      await axios.post(`${API_BASE_URL}/delete`, {
-        postId: postId,
-        userId: user.userId // Backend will verify ownership
-      });
-
-      // Optimistic UI: Remove from state immediately so it feels fast
+      await axios.post(`${API_BASE_URL}/delete`, 
+        { postId: postId, userId: user.userId },
+        { headers: { Authorization: user.token } } // Pass the token
+      );
       setPosts(posts.filter(p => p.id !== postId));
     } catch (err) {
-      console.error("Delete failed:", err);
-      alert("Failed to delete. You can only delete your own posts.");
+      alert("Unauthorized: You don't own this post.");
     }
   };
 
   const handleLike = async (postId) => {
-    // 1. Find the post and update UI immediately (Optimistic Update)
-    const updatedPosts = posts.map(post => {
-      if (post.id === postId) {
-        const alreadyLiked = post.likes && post.likes.includes(user.userId);
-        const newLikes = alreadyLiked 
-          ? post.likes.filter(id => id !== user.userId) // Remove like
-          : [...(post.likes || []), user.userId];       // Add like
-        return { ...post, likes: newLikes };
-      }
-      return post;
-    });
-    setPosts(updatedPosts);
-
-    // 2. Sync with the backend in the background
+    // Optimistic UI update...
     try {
-      await axios.post(`${API_BASE_URL}/like`, {
-        postId: postId,
-        userId: user.userId
-      });
+      await axios.post(`${API_BASE_URL}/like`, 
+        { postId: postId, userId: user.userId },
+        { headers: { Authorization: user.token } } // Pass the token
+      );
     } catch (err) {
-      console.error("Like update failed:", err);
-      // If the API fails, we should ideally fetchPosts() again to sync
-    }
+      console.error("Like failed", err);
+  }
   };
 
   if (loading) return <div style={{ marginTop: '2rem' }}>Loading Feed...</div>;

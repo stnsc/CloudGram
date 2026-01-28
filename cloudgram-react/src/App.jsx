@@ -18,8 +18,8 @@ import { Amplify } from 'aws-amplify';
 Amplify.configure({
   Auth: {
     Cognito: {
-      userPoolId: 'eu-central-1_ibviG0RCo', // Paste your User Pool ID
-      userPoolClientId: '2q732dg9a5nhk34kcgi3arqe2' // Paste your Client ID
+      userPoolId: 'eu-central-1_ibviG0RCo', 
+      userPoolClientId: '2q732dg9a5nhk34kcgi3arqe2' 
     }
   }
 });

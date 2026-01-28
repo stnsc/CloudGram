@@ -2,31 +2,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #333;
-  color: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 0.75rem 15%; /* Centered content look */
+  background-color: #ffffff;
+  color: #262626;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #dbdbdb;
 }
 
-.logo {
-  font-weight: bold;
-  font-size: 1.5rem;
+.navbar .logo {
+  font-family: 'Billabong', 'Segoe UI', cursive; /* Instagram-vibes */
+  font-size: 1.8rem;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .nav-link {
-  color: #ddd;
+  color: #262626;
   text-decoration: none;
   margin-left: 20px;
-  font-weight: 500;
-  transition: color 0.3s;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
-.nav-link:hover {
-  color: #fff;
-}
-
-.content {
-  padding: 2rem;
-  max-width: 800px;
-  margin: 0 auto;
+.logout-btn {
+  background: none;
+  border: 1px solid #dbdbdb;
+  color: #262626;
+  padding: 5px 12px;
+  font-size: 0.85rem;
 }

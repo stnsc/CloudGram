@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { signUp, signIn, confirmSignUp } from 'aws-amplify/auth'; // FIXED: Added imports
+import { signUp, signIn, confirmSignUp } from 'aws-amplify/auth'; 
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 

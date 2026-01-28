@@ -1,0 +1,67 @@
+/* Create a new Feed.css or add to App.css */
+.feed-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 10px;
+}
+
+.post-card {
+  background: white;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  font-weight: 600;
+}
+
+.post-image {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  max-height: 600px;
+}
+
+.post-content {
+  padding: 12px;
+  text-align: left;
+}
+
+.post-actions {
+  display: flex;
+  gap: 15px;
+  padding: 0 12px 10px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.4rem;
+  transition: transform 0.1s;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.like-count {
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.post-caption {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.post-caption b {
+  margin-right: 8px;
+}

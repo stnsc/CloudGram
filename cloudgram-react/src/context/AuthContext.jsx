@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { getCurrentUser, signOut } from 'aws-amplify/auth';
+import { fetchAuthSession, getCurrentUser, signOut } from 'aws-amplify/auth';
 
 const AuthContext = createContext(null);
 
@@ -13,15 +13,15 @@ export const AuthProvider = ({ children }) => {
 
   const checkUser = async () => {
     try {
-      const currentUser = await getCurrentUser();
-      setUser({
-        username: currentUser.username,
-        userId: currentUser.userId
-      });
+        const { username, userId } = await getCurrentUser();
+        const session = await fetchAuthSession();
+        const token = session.tokens.idToken.toString(); 
+
+        setUser({ username, userId, token });
     } catch (err) {
-      setUser(null);
+        setUser(null);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
 
