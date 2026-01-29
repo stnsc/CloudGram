@@ -7,9 +7,9 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState(''); // Added password state
-  const [confirmationCode, setConfirmationCode] = useState(''); // For email verification
-  const [isConfirming, setIsConfirming] = useState(false); // UI toggle
+  const [password, setPassword] = useState('');
+  const [confirmationCode, setConfirmationCode] = useState(''); 
+  const [isConfirming, setIsConfirming] = useState(false); 
   
   const { login } = useAuth();
   const navigate = useNavigate();

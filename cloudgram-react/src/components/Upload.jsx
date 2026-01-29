@@ -17,51 +17,54 @@ const Upload = () => {
   };
 
   const handleUpload = async () => {
-    if (!file && !caption) return;
-    setUploading(true);
-    
-    try {
-      let imageUrl = null;
+  if (!user || !user.token) {
+    alert("Your session is still loading. Please wait a second.");
+    return;
+  }
 
-      if (file) {
-        const response = await axios.get(`${API_BASE_URL}/get-upload-url`, {
-          params: { contentType: file.type } 
-        });
-        
-        const { uploadUrl, fileKey } = response.data;
+  if (!file && !caption) return;
+  setUploading(true);
+  
+  try {
+    const token = user.token.trim();
+    let imageUrl = null;
 
-        await axios.put(uploadUrl, file, {
-          headers: { 
-            'Content-Type': file.type 
-          }
-        });
-        
-        imageUrl = `https://cloudgram-media-stnsc.s3.eu-central-1.amazonaws.com/${fileKey}`;
-      }
-
-      const postPayload = {
-        userId: user.userId,
-        username: user.username,
-        caption: caption,
-        imageUrl: imageUrl
-      };
-
-      await axios.post(`${API_BASE_URL}/create-post`, postPayload, {
-        headers: {
-          Authorization: user.token // This sends the JWT to the Authorizer
-        }
+    if (file) {
+      const response = await axios.get(`${API_BASE_URL}/get-upload-url`, {
+        params: { contentType: file.type },
+        headers: { Authorization: `Bearer ${token}` } 
       });
       
-      alert('Post Published!');
-      navigate('/');
+      const { uploadUrl, fileKey } = response.data;
 
-    } catch (error) {
-      console.error('Upload Error:', error);
-      alert('Upload failed. See console for details.');
-    } finally {
-      setUploading(false);
+      await axios.put(uploadUrl, file, {
+        headers: { 'Content-Type': file.type }
+      });
+      
+      imageUrl = `https://cloudgram-media-stnsc.s3.eu-central-1.amazonaws.com/${fileKey}`;
     }
-  };
+
+    const postPayload = {
+      caption: caption,
+      imageUrl: imageUrl
+    };
+
+    await axios.post(`${API_BASE_URL}/create-post`, postPayload, {
+      headers: {
+        Authorization: `Bearer ${token}` 
+      }
+    });
+    
+    alert('Post Published!');
+    navigate('/');
+
+  } catch (error) {
+    console.error('Upload Error:', error.response?.data || error);
+    alert(`Upload failed: ${error.response?.data?.error || 'Check console'}`);
+  } finally {
+    setUploading(false);
+  }
+};
 
   return (
     <div className="card" style={{ maxWidth: '500px', margin: '2rem auto', textAlign: 'left' }}>

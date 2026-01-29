@@ -13,12 +13,22 @@ export const AuthProvider = ({ children }) => {
 
   const checkUser = async () => {
     try {
-        const { username, userId } = await getCurrentUser();
         const session = await fetchAuthSession();
-        const token = session.tokens.idToken.toString(); 
+        if (session && session.tokens && session.tokens.idToken) {
+            const { username } = await getCurrentUser();
+            const token = session.tokens.idToken.toString(); 
+            const verified_sub = session.tokens.idToken.payload.sub;
 
-        setUser({ username, userId, token });
+            setUser({ 
+                username, 
+                userId: verified_sub, 
+                token 
+            });
+        } else {
+            setUser(null);
+        }
     } catch (err) {
+        console.error("Auth check failed:", err);
         setUser(null);
     } finally {
         setLoading(false);

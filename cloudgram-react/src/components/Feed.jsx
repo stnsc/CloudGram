@@ -18,10 +18,10 @@ const Feed = () => {
     try {
       const res = await axios.get(`${API_BASE_URL}/feed`);
       
-      // DynamoDB might return { Items: [...] } or just the array depending on your Lambda
+
       const data = res.data.Items || res.data;
       
-      // Sort posts by timestamp (newest first)
+
       const sortedPosts = data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       
       setPosts(sortedPosts);
@@ -38,7 +38,7 @@ const Feed = () => {
     try {
       await axios.post(`${API_BASE_URL}/delete`, 
         { postId: postId, userId: user.userId },
-        { headers: { Authorization: user.token } } // Pass the token
+        { headers: { Authorization: `${user.token}` } } 
       );
       setPosts(posts.filter(p => p.id !== postId));
     } catch (err) {
@@ -47,15 +47,42 @@ const Feed = () => {
   };
 
   const handleLike = async (postId) => {
-    // Optimistic UI update...
+    if (!user || !user.token) {
+        console.error("Like failed: No valid session token found.");
+        alert("Please refresh the page or log in again to like posts.");
+        return;
+    }
+
+    const previousPosts = [...posts];
+
+    setPosts(currentPosts => 
+      currentPosts.map(post => {
+        if (post.id === postId) {
+          const currentLikes = post.likes || [];
+          const isLiked = currentLikes.includes(user.userId);
+          
+
+          const updatedLikes = isLiked 
+            ? currentLikes.filter(id => id !== user.userId)
+            : [...currentLikes, user.userId];
+
+          return { ...post, likes: updatedLikes };
+        }
+        return post;
+      })
+    );
+
     try {
       await axios.post(`${API_BASE_URL}/like`, 
-        { postId: postId, userId: user.userId },
-        { headers: { Authorization: user.token } } // Pass the token
+        { postId: postId }, 
+        { headers: { Authorization: `Bearer ${user.token}` } }
       );
     } catch (err) {
       console.error("Like failed", err);
-  }
+
+      setPosts(previousPosts);
+      alert("Something went wrong. Please try liking again.");
+    }
   };
 
   if (loading) return <div style={{ marginTop: '2rem' }}>Loading Feed...</div>;
@@ -110,7 +137,7 @@ const Feed = () => {
                   style={{ 
                     background: 'none', 
                     border: isLiked ? '1px solid #646cff' : '1px solid #555',
-                    color: isLiked ? '#646cff' : '#fff',
+                    color: isLiked ? '#646cff' : '#000',
                     marginRight: '10px',
                     padding: '5px 15px'
                   }}

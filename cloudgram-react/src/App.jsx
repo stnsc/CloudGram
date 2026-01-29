@@ -11,10 +11,8 @@ import Feed from './components/Feed';
 import Upload from './components/Upload';
 import Auth from './components/Auth';
 
-// 1. Import Amplify
 import { Amplify } from 'aws-amplify';
 
-// 2. Configure with your IDs
 Amplify.configure({
   Auth: {
     Cognito: {
